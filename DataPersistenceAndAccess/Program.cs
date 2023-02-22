@@ -1,4 +1,4 @@
-﻿using DataPersistenceAndAccess.Repositories.Customers;
+﻿using DataPersistenceAndAccess.DataAccess.Customers;
 using Microsoft.Data.SqlClient;
 
 namespace DataPersistenceAndAccess
@@ -8,12 +8,14 @@ namespace DataPersistenceAndAccess
         static void Main(string[] args)
         {
             var customers = new CustomerRepository { ConnectionString = GetConnectionString() };
-            //customers.Add(new Models.Customer(null, "Jakob", "TheGoat", "Sweden", "17444", "073 258 65 98", "TheGoat@Legend.com"));
-            //var allPeople = customers.GetAll();
-            //foreach (var person in allPeople) 
+            customers.Update(new Models.Customer(62, "Jakob", "TheGoat", "Sweden", "17444", "073 258 65 98", "TheGoat@Legend.com"));
+            //var allPeople = customers.GetLimitedListWiithOffset(4,4);
+            //foreach (var person in allPeople)
             //{
-            //    Console.WriteLine(person.CustomerId+" "+person.FirstName + " "+ person.LastName);
+            //    Console.WriteLine(person.CustomerId + " " + person.FirstName + " " + person.LastName);
             //}
+            var person = customers.GetByName("jakob");
+            Console.WriteLine(person.CustomerId+" "+person.FirstName + " " +person.LastName + " " +person.Country);
             static string GetConnectionString()
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
