@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace DataPersistenceAndAccess.Models
 {
-    public readonly record struct CustomerSpender(Customer customer, int totalSpent);
+    public readonly record struct CustomerSpender(Customer customer, decimal totalSpent);
 }
