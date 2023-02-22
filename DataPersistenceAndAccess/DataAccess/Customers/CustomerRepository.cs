@@ -20,12 +20,12 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
             connection.Open();
             var sql = " INSERT INTO Customer  ( FirstName ,LastName,Country,PostalCode,Phone,Email) VALUES(@FirstName, @LastName, @Country, @PostalCode, @Phone, @Email)";
             using var command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@FirstName",obj.FirstName);
-            command.Parameters.AddWithValue("@LastName", obj.LastName);
-            command.Parameters.AddWithValue("@Country", obj.Country);
-            command.Parameters.AddWithValue("@PostalCode", obj.PostalCode);
-            command.Parameters.AddWithValue("@Phone", obj.Phone);
-            command.Parameters.AddWithValue("@Email", obj.Email);
+            command.Parameters.AddWithValue("@FirstName",obj.firstName);
+            command.Parameters.AddWithValue("@LastName", obj.lastName);
+            command.Parameters.AddWithValue("@Country", obj.country);
+            command.Parameters.AddWithValue("@PostalCode", obj.postalCode);
+            command.Parameters.AddWithValue("@Phone", obj.phone);
+            command.Parameters.AddWithValue("@Email", obj.email);
             command.ExecuteNonQuery();
             connection.Close();
         }
@@ -164,7 +164,55 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
 
         public List<CustomerCountry> GetListOfCountriesWithAmountOfCustomers()
         {
+            List<CustomerCountry> list = new List<CustomerCountry>();
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var sql = "SELECT Country,COUNT(CustomerId) AS NumberOfCustomers FROM Customer GROUP BY Country Order by NumberOfCustomers DESC";
+            using var command = new SqlCommand(sql, connection);
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new CustomerCountry(
+                    reader.GetString(0),
+                    reader.GetInt32(1)
+                    ));
+            }
+            connection.Close();
+            return list;
+        }
+
+        public CustomerGenre GetListOfCustomerMostPopularGenre(int id)
+        {
             throw new NotImplementedException();
+        }
+
+        public List<CustomerSpender> GetListOfHighestSpendingCustomers()
+        {
+            List<CustomerSpender> list = new List<CustomerSpender>();
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var sql = "SELECT Customer.CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email, SUM(Total) AS TotelSpending FROM Customer INNER JOIN Invoice ON Customer.CustomerId = Invoice.CustomerId GROUP BY Customer.CustomerId,FirstName, LastName, Country, PostalCode, Phone, Email Order by TotelSpending DESC";
+            using var command = new SqlCommand(sql, connection);
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                string? three = reader.IsDBNull(3) ? null : reader.GetString(3);
+                string? four = reader.IsDBNull(4) ? null : reader.GetString(4);
+                string? five = reader.IsDBNull(5) ? null : reader.GetString(5);
+                list.Add(new CustomerSpender(new Customer(
+                    reader.GetInt32(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    three,
+                    four,
+                    five,
+                    reader.GetString(6)
+                    ), reader.GetDecimal(7)));
+            }
+            connection.Close();
+            return list;
         }
 
         public void Update(Customer obj)
@@ -173,13 +221,13 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
             connection.Open();
             var sql = "UPDATE Customer SET FirstName = @firstName, LastName = @lastName, Country = @country, PostalCode = @postalCode, Phone = @phone, Email = @email WHERE CustomerId = @ID";
             using var command = new SqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@firstName", obj.FirstName);
-            command.Parameters.AddWithValue("@lastName", obj.LastName);
-            command.Parameters.AddWithValue("@country", obj.Country);
-            command.Parameters.AddWithValue("@postalCode", obj.PostalCode);
-            command.Parameters.AddWithValue("@phone", obj.Phone);
-            command.Parameters.AddWithValue("@email", obj.Email);
-            command.Parameters.AddWithValue("@ID", obj.CustomerId);
+            command.Parameters.AddWithValue("@firstName", obj.firstName);
+            command.Parameters.AddWithValue("@lastName", obj.lastName);
+            command.Parameters.AddWithValue("@country", obj.country);
+            command.Parameters.AddWithValue("@postalCode", obj.postalCode);
+            command.Parameters.AddWithValue("@phone", obj.phone);
+            command.Parameters.AddWithValue("@email", obj.email);
+            command.Parameters.AddWithValue("@ID", obj.customerId);
 
             command.ExecuteNonQuery();
             connection.Close();
