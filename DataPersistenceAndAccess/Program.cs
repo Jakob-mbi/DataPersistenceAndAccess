@@ -41,7 +41,6 @@ namespace DataPersistenceAndAccess
                 builder.TrustServerCertificate = true;
                 return builder.ConnectionString;
             }
-            //N - SE - 01 - 5256\\SQLEXPRESS
         }
     }
 }
