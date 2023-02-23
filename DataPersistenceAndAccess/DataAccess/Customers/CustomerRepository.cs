@@ -96,6 +96,14 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
                 reader.GetString(6));
             }
             connection.Close();
+            try
+            {
+                if (String.IsNullOrEmpty(person.firstName)) { throw new Exception("No customer exists with that ID"); }
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+            }
             return person;
         }
 
@@ -128,7 +136,14 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
                 reader.GetString(6));
             }            
             connection.Close();
-            if (person.firstName == string.Empty) { throw new Exception("No customer exists with that Name"); }
+            try
+            {
+                if (String.IsNullOrEmpty(person.firstName)) { throw new Exception("No customer exists with that Name"); }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             return person;
         }
 
@@ -223,6 +238,14 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
             }
 
             connection.Close();
+            try
+            {
+                if (String.IsNullOrEmpty(list[0].customer.firstName)) { throw new Exception("No customer exists with that ID"); }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             return list;
         }
 
