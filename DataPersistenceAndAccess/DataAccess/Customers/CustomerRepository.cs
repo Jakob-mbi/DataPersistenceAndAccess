@@ -30,10 +30,6 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
             connection.Close();
         }
 
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         public List<Customer> GetAll()
         {
@@ -109,6 +105,7 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
             using var reader = command.ExecuteReader();
             var person = new Customer();
 
+
             while (reader.Read())
             {
                 string? three = reader.IsDBNull(3) ? null : reader.GetString(3);
@@ -124,6 +121,7 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
                 five,
                 reader.GetString(6));
             }
+            
             connection.Close();
             return person;
         }
@@ -182,9 +180,44 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
             return list;
         }
 
-        public CustomerGenre GetListOfCustomerMostPopularGenre(int id)
+        public List<CustomerGenre> GetListOfCustomerMostPopularGenre(int id)
         {
-            throw new NotImplementedException();
+            StringBuilder stringBuilder= new StringBuilder();
+            stringBuilder.Append("SELECT TOP (1) WITH TIES Customer.CustomerId, FirstName, LastName, Country, PostalCode, Phone, Email, Genre.NAME, COUNT(Genre.NAME) AS GenreNumber");
+            stringBuilder.Append(" FROM Customer  INNER JOIN Invoice  ON Customer.CustomerId = Invoice.CustomerId INNER JOIN InvoiceLine  ON Invoice.InvoiceId = InvoiceLine.InvoiceId");
+            stringBuilder.Append(" INNER JOIN Track  ON InvoiceLine.TrackId = Track.TrackId  INNER JOIN Genre  ON Track.GenreId = Genre.GenreId");
+            stringBuilder.Append(" WHERE [Customer].[CustomerId] = @ID");
+            stringBuilder.Append(" GROUP BY Customer.CustomerId, FirstName, LastName,Country, PostalCode,Phone,Email,Genre.NAME");
+            stringBuilder.AppendLine(" Order by GenreNumber DESC");
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var sql = stringBuilder.ToString();
+
+            using var command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@ID", id);
+
+            using var reader = command.ExecuteReader();
+            var list = new List<CustomerGenre>();
+
+
+            while (reader.Read())
+            {
+                string? three = reader.IsDBNull(3) ? null : reader.GetString(3);
+                string? four = reader.IsDBNull(4) ? null : reader.GetString(4);
+                string? five = reader.IsDBNull(5) ? null : reader.GetString(5);
+               list.Add(new CustomerGenre(new Customer(
+                    reader.GetInt32(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    three,
+                    four,
+                    five,
+                    reader.GetString(6)
+                    ), reader.GetString(7), reader.GetInt32(8)));
+            }
+
+            connection.Close();
+            return list;
         }
 
         public List<CustomerSpender> GetListOfHighestSpendingCustomers()
