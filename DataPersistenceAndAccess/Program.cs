@@ -8,8 +8,8 @@ namespace DataPersistenceAndAccess
     {
         static void Main(string[] args)
         {
-            var customers = new CustomerRepository { ConnectionString = GetConnectionString() };
-            var person1 = customers.GetById(10);
+            ICustomerRepository customers = new CustomerRepository (GetConnectionString());
+            var person1 = customers.GetById(100);
             Console.WriteLine(person1.firstName + " " + person1.lastName);
             //customers.Update(new Models.Customer(62, "Jakob", "TheGoat", "Sweden", "17444", "073 258 65 98", "TheGoat@Legend.com"));
             //var allPeople = customers.GetLimitedListWiithOffset(4,4);

@@ -1,5 +1,6 @@
 ﻿using DataPersistenceAndAccess.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,14 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
     public class CustomerRepository : ICustomerRepository
     {
 
-        public string ConnectionString { get; set; } = string.Empty;
+        private readonly string ConnectionString;
 
-   
+        public CustomerRepository(string connectionString)
+        {
+            ConnectionString = connectionString;
+        }
+
+
         public void Add(Customer obj)
         {
             using var connection = new SqlConnection(ConnectionString);
@@ -120,9 +126,9 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
                 four,
                 five,
                 reader.GetString(6));
-            }
-            
+            }            
             connection.Close();
+            if (person.firstName == string.Empty) { throw new Exception("No customer exists with that Name"); }
             return person;
         }
 
