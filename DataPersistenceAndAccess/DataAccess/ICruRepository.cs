@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataPersistenceAndAccess.DataAccess
 {
-    public interface ICrudRepository<T, ID>
+    public interface ICruRepository<T, ID>
     {
         
         List<T> GetAll();
@@ -34,11 +34,6 @@ namespace DataPersistenceAndAccess.DataAccess
         /// </summary>
         /// <param/* name="obj"*/></param>
         
-        void Delete(ID id);
-        /// <summary>
-        /// Deteles a record by its ID.
-        /// </summary>
-        /// <param /*name="id"*/></param>
     }
 }
 

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace DataPersistenceAndAccess.Models
 {
-    public readonly record struct CustomerGenre(Customer customer,List<string> genre);
+    public readonly record struct CustomerGenre(Customer customer,string genre, int number);
 }

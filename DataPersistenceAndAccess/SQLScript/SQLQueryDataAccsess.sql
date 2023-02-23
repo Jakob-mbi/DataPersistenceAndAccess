@@ -116,8 +116,16 @@ should be reused.
 means the genre that corresponds to the most tracks from invoices associated to that customer.
   ******/
 
-  USE [Chinook]
-  SELECT [Customer].[CustomerId],[FirstName],[LastName],[Genre].[NAME], COUNT([Genre].[NAME]) AS [GenreNumber]
+   USE [Chinook]
+  SELECT TOP (1) With Ties 
+	[Customer].[CustomerId]
+      ,[FirstName]
+      ,[LastName]
+      ,[Country]
+      ,[PostalCode]
+      ,[Phone]
+      ,[Email]
+	  ,[Genre].[NAME], COUNT([Genre].[NAME]) AS [GenreNumber]
   FROM [Customer]
   INNER JOIN [Invoice]
   ON [Customer].[CustomerId] = [Invoice].[CustomerId]
@@ -128,9 +136,16 @@ means the genre that corresponds to the most tracks from invoices associated to 
 
   INNER JOIN [Genre]
   ON [Track].[GenreId] = [Genre].[GenreId]
-
-  GROUP BY [Customer].[CustomerId],[FirstName],[LastName],[Genre].[NAME]
-  Order by [Customer].[CustomerId],[GenreNumber] DESC
+	WHERE [Customer].[CustomerId] = 12 
+  GROUP BY [Customer].[CustomerId]
+      ,[FirstName]
+      ,[LastName]
+      ,[Country]
+      ,[PostalCode]
+      ,[Phone]
+      ,[Email]
+	  ,[Genre].[NAME]
+  Order by [GenreNumber] DESC
 
 
   /******   ******/

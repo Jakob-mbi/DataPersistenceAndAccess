@@ -1,5 +1,6 @@
 ﻿using DataPersistenceAndAccess.DataAccess.Customers;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace DataPersistenceAndAccess
 {
@@ -8,6 +9,8 @@ namespace DataPersistenceAndAccess
         static void Main(string[] args)
         {
             var customers = new CustomerRepository { ConnectionString = GetConnectionString() };
+            var person1 = customers.GetById(10);
+            Console.WriteLine(person1.firstName + " " + person1.lastName);
             //customers.Update(new Models.Customer(62, "Jakob", "TheGoat", "Sweden", "17444", "073 258 65 98", "TheGoat@Legend.com"));
             //var allPeople = customers.GetLimitedListWiithOffset(4,4);
             //foreach (var person in allPeople)
@@ -23,15 +26,16 @@ namespace DataPersistenceAndAccess
             //    Console.WriteLine(person.Country+ " " + person.NumberOfCustomers);
             //}
 
-            var allPeople = customers.GetListOfHighestSpendingCustomers();
-            foreach (var person in allPeople)
+            var People = customers.GetListOfCustomerMostPopularGenre(12);
+            Console.Write(People[0].customer.firstName+" "+ People[0].customer.lastName + " ");
+            foreach (var person in People)
             {
-                Console.WriteLine(person.customer.FirstName + " " + person.customer.LastName + " " +person.totalSpent);
+                Console.Write(person.genre + " ");
             }
             static string GetConnectionString()
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-                builder.DataSource = "LAPTOP-SJ7TR0SQ";
+                builder.DataSource = "N-SE-01-5256\\SQLEXPRESS";
                 builder.InitialCatalog = "Chinook";
                 builder.IntegratedSecurity = true;
                 builder.TrustServerCertificate = true;

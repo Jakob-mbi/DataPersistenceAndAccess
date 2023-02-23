@@ -7,7 +7,7 @@ using DataPersistenceAndAccess.Models;
 
 namespace DataPersistenceAndAccess.DataAccess.Customers
 {
-    public interface ICustomerRepository : ICrudRepository<Customer,int>
+    public interface ICustomerRepository : ICruRepository<Customer,int>
     {
         public Customer GetByName(string name);
         /// <summary>
@@ -31,10 +31,10 @@ namespace DataPersistenceAndAccess.DataAccess.Customers
         /// </summary>
         /// <returns>List<CustomerCountry></returns>
         /// 
-        public CustomerGenre GetListOfCustomerMostPopularGenre(int id);
+        public List<CustomerGenre> GetListOfCustomerMostPopularGenre(int id);
         /// <summary>
         /// Retrieves most popular genre of a given customer.
         /// </summary>
-        /// <returns>CustomerGenre</returns>
+        /// <returns>List<CustomerGenre></returns>
     }
 }
